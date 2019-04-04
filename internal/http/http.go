@@ -1,6 +1,7 @@
 package http
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 
@@ -18,9 +19,10 @@ type Server struct {
 }
 
 // NewHTTPServer returns server intance
-func NewHTTPServer(port int) (*Server, error) {
+func NewHTTPServer(port int, handler http.Handler) (*Server, error) {
 	srv := &http.Server{
-		Addr: fmt.Sprintf(":%d", port),
+		Addr:    fmt.Sprintf(":%d", port),
+		Handler: withLogger(http.Handle("/rpc", handler)),
 	}
 
 	server := Server{
@@ -32,13 +34,19 @@ func NewHTTPServer(port int) (*Server, error) {
 }
 
 // Start - starts http server
-func (s *Server) Start() error {
+func (s *Server) Start() {
 	log.Infof("Starting http server on port %d...", s.port)
-	return fmt.Errorf("not implemented")
+
+	go s.server.ListenAndServe()
 }
 
 // Stop - stops http server
-func (s *Server) Stop() error {
+func (s *Server) Stop() {
 	log.Infof("Stopping http server...")
-	return fmt.Errorf("not implemented")
+	s.server.Shutdown(context.Background())
+	log.Infof("HTTP server stopped.")
+}
+
+func (s *Server) listen() {
+	s.server.ListenAndServe()
 }
