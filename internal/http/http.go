@@ -8,26 +8,27 @@ import (
 	"github.com/da4nik/jrpc2_try/internal/log"
 )
 
-// Opts is options struct for http server
-type Opts struct {
-}
-
 // Server is http server struct
 type Server struct {
 	port   int
 	server *http.Server
+	mux    *http.ServeMux
 }
 
 // NewHTTPServer returns server intance
 func NewHTTPServer(port int, handler http.Handler) (*Server, error) {
+	mux := http.NewServeMux()
+	mux.Handle("/rpc", withMiddlewares(handler))
+
 	srv := &http.Server{
 		Addr:    fmt.Sprintf(":%d", port),
-		Handler: withLogger(http.Handle("/rpc", handler)),
+		Handler: mux,
 	}
 
 	server := Server{
 		port:   port,
 		server: srv,
+		mux:    mux,
 	}
 
 	return &server, nil

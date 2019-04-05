@@ -29,6 +29,7 @@ func post(url, contentType string, data interface{}) {
 		return
 	}
 
+	fmt.Printf("Body: %s\n", b)
 	var restBody interface{}
 	err = json.Unmarshal(b, &restBody)
 	if err != nil {
@@ -41,7 +42,25 @@ func post(url, contentType string, data interface{}) {
 }
 
 func main() {
-	post("http://localhost:8080", "application/json", m{
+	requestBatch := []m{
+		{
+			"jsonrpc": "2.0",
+			"method":  "auth.login",
+			"params": m{
+				"email":    "user@example.com",
+				"password": "password",
+			},
+			"id": "1",
+		},
+		{
+			"jsonrpc": "2.0",
+			"method":  "auth.logout",
+			"params":  nil,
+			"id":      "2",
+		},
+	}
+
+	requestSingle := m{
 		"jsonrpc": "2.0",
 		"method":  "auth.login",
 		"params": m{
@@ -49,5 +68,10 @@ func main() {
 			"password": "password",
 		},
 		"id": "1",
-	})
+	}
+
+	fmt.Printf("\n-------------- Batch\n\n")
+	post("http://localhost:8080/rpc", "application/json", requestBatch)
+	fmt.Printf("\n-------------- Single\n\n")
+	post("http://localhost:8080/rpc", "application/json", requestSingle)
 }

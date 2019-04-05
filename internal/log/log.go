@@ -24,3 +24,8 @@ func Errorf(format string, args ...interface{}) {
 func Infof(format string, args ...interface{}) {
 	logger.Infof(format, args...)
 }
+
+// Debugf prints debug message
+func Debugf(format string, args ...interface{}) {
+	logger.Debugf(format, args...)
+}

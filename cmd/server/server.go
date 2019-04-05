@@ -43,11 +43,11 @@ func main() {
 	loadENV()
 	parseFlags()
 
-	jrpc, _ := jsonrpc.NewJSONRPC(jsonrpc.FuncMap{
+	jrpc := jsonrpc.NewJSONRPC(jsonrpc.FuncMap{
 		"auth.login": login,
 	})
 
-	httpServer, err := http.NewHTTPServer(port, jrpc.Handler())
+	httpServer, err := http.NewHTTPServer(port, jrpc)
 	if err != nil {
 		log.Errorf("Error creating http server: %s", err.Error())
 		os.Exit(1)
