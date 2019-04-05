@@ -48,7 +48,7 @@ func main() {
 			"method":  "auth.login",
 			"params": m{
 				"email":    "user@example.com",
-				"password": "password",
+				"password": "123456789",
 			},
 			"id": "1",
 		},

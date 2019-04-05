@@ -2,13 +2,13 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"os"
 	"os/signal"
 	"strconv"
 
 	"github.com/da4nik/jrpc2_try/internal/http"
 	"github.com/da4nik/jrpc2_try/internal/log"
+	"github.com/da4nik/jrpc2_try/internal/procedures"
 	"github.com/da4nik/jrpc2_try/pkg/jsonrpc"
 )
 
@@ -33,19 +33,13 @@ func parseFlags() {
 	port = *portPtr
 }
 
-func login(params map[string]interface{}) (interface{}, error) {
-	return nil, fmt.Errorf("not implemented")
-}
-
 func main() {
 	log.InitLogger()
 
 	loadENV()
 	parseFlags()
 
-	jrpc := jsonrpc.NewJSONRPC(jsonrpc.FuncMap{
-		"auth.login": login,
-	})
+	jrpc := jsonrpc.NewJSONRPC(procedures.Map())
 
 	httpServer, err := http.NewHTTPServer(port, jrpc)
 	if err != nil {
